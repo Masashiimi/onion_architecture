@@ -85,13 +85,13 @@ describe('Usecase: Organize a conference', () => {
             title: "Nouvelle conference",
             startDate: new Date('2024-01-04T10:00:00.000Z'),
             endDate: new Date('2024-01-04T11:00:00.000Z'),
-            seats: 15
+            seats: 9
         }
         it('should throw an error', async () => {
             await expect(usecase.execute(payload)).rejects.toThrow('Conference has not enough seats')
         })
     })
-
+ 
     describe('Scenario: Conference has too many seats', () => {
         const payload = {
             user: testUsers.johnDoe,

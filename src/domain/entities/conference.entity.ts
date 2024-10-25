@@ -1,5 +1,6 @@
 import { differenceInDays, differenceInHours } from "date-fns"
 import { User } from "./user.entity"
+import { Booking } from "./booking.entity"
 
 type ConferenceProps = {
     id: string
@@ -12,7 +13,7 @@ type ConferenceProps = {
 
 export class Conference {
     constructor(
-        public props: ConferenceProps
+        public props: ConferenceProps,
     ) {}
 
     isTooClose(now: Date) {
@@ -20,7 +21,7 @@ export class Conference {
     }
 
     hasNotEnoughSeats() {
-        return this.props.seats < 20
+        return this.props.seats < 10
     }
 
     hasTooManySeats() {
@@ -33,6 +34,10 @@ export class Conference {
 
     isTheOrganizer(user: User) {
         return this.props.organizerId === user.props.id
+    }
+
+    amountSeatsLowerBooking(bookings: Booking[]) {
+        return this.props.seats < bookings.length
     }
 
     update(data: Partial<ConferenceProps>) {

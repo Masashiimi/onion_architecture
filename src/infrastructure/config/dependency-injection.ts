@@ -8,7 +8,6 @@ import { IUserRepository } from "../../interfaces/user-repository.interface";
 import { CurrentDateGenerator } from "../../shared/utils/current-date-generator";
 import { RandomIDGenerator } from "../../shared/utils/random-id-generator";
 import { InMemoryBookingRepository } from "../../tests/in-memory/in-memory-booking-repository";
-import { InMemoryConferenceRepository } from "../../tests/in-memory/in-memory-conference-repository";
 import { InMemoryMailer } from "../../tests/in-memory/in-memory-mailer";
 import { ChangeDates } from "../../usecases/change-dates";
 import { ChangeSeats } from "../../usecases/change-seats";
@@ -18,9 +17,8 @@ import { MongoUser } from "../database/mongo/mongo-user";
 import { MongoUserRepository } from "../database/mongo/mongo-user-repository";
 import { MongoConferenceRepository } from "../database/mongo/mongo-conference-repository";
 import { MongoConference } from "../database/mongo/mongo-conference";
-import { IMessageBroker } from "../../interfaces/message-broker.interface";
-import { InMemoryPublisher } from "../../tests/in-memory/in-memory-publisher";
 import { RabbitMQPublisher } from "../publisher/rabbitmq-publisher";
+import { Bookings } from "../../usecases/booking";
 
 export interface Dependencies {
     conferenceRepository: IConferenceRepository
@@ -34,6 +32,7 @@ export interface Dependencies {
     changeDatesUsecase: ChangeDates
     bookingRepository: IBookingRepository
     messageBroker: RabbitMQPublisher
+    bookingUsecase: Bookings
 }
 
 const container = createContainer<Dependencies>()
@@ -55,11 +54,13 @@ container.register({
         ({conferenceRepository, idGenerator, dateGenerator, messageBroker}) => new OrganizeConference(conferenceRepository, idGenerator, dateGenerator, messageBroker)
     ).singleton(),
     changeSeatsUsecase: asFunction(
-        ({conferenceRepository}) => new ChangeSeats(conferenceRepository)
+        ({conferenceRepository, bookingRepository}) => new ChangeSeats(conferenceRepository, bookingRepository)
     ).singleton(),
     changeDatesUsecase: asFunction(
         ({conferenceRepository, mailer, bookingRepository, userRepository, dateGenerator}) => new ChangeDates(conferenceRepository, mailer, bookingRepository, userRepository, dateGenerator)
-    ).singleton()
+    ).singleton(),
+    bookingUsecase: asFunction(({conferenceRepository, userRepository, bookingRepository, mailer })=> new Bookings(conferenceRepository, userRepository, bookingRepository, mailer))
+    
 })
 
 export type ResolveDependency = <K extends keyof Dependencies>(key: K) => Dependencies[K]
