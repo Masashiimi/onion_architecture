@@ -34,3 +34,12 @@ export class ChangeDatesInputs {
     @IsNotEmpty()
     endDate: Date
 }
+
+export class BookingInputs {
+    @IsString()
+    @IsNotEmpty()
+    conferenceId: string
+    @IsString()
+    @IsNotEmpty()
+    userId: string
+}

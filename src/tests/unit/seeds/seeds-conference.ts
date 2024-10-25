@@ -10,5 +10,13 @@ export const testConferences = {
         startDate: new Date('2024-01-05T10:00:00.000Z'),
         endDate: new Date('2024-01-05T11:00:00.000Z'),
         seats: 50
+    }),
+    conference2: new Conference({
+        id:'id-2',
+        organizerId: testUsers.johnDoe.props.id,
+        title: 'Nouvelle conference',
+        startDate: new Date('2024-01-05T10:00:00.000Z'),
+        endDate: new Date('2024-01-05T11:00:00.000Z'),
+        seats: 12
     })
 }
